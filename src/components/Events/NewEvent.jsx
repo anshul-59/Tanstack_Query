@@ -14,14 +14,14 @@ export default function NewEvent() {
     mutationFn: createNewEvent,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["events"] });
-      // it tells react that some of the data in outdated now and it should be makred stale and a refetch shuld be triggered
-      //the query key allow a refetch ni all those components  wchi have the quesry  key  events in them
+      // it tells react that some of the data in outdated now and it should be maarked stale and a refetch shuld be triggered
+      //the query key allows a refetch in all those components  which have the query key events in them
       navigate("/events");
     },
   });
 
   function handleSubmit(formData) {
-    mutate({ event: formData }); // this is how my backend wants the data.
+    mutate({ event: formData }); // this is the structure of the data that my backend wants
   }
 
   return (
