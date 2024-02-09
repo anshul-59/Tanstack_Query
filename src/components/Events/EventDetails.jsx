@@ -1,6 +1,6 @@
+import { useState } from "react";
 import { Link, Outlet, useNavigate, useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { useState } from "react";
 
 import Header from "../Header.jsx";
 import { fetchEvent, deleteEvent, queryClient } from "../../util/http.js";
@@ -9,6 +9,7 @@ import Modal from "../UI/Modal.jsx";
 
 export default function EventDetails() {
   const [isDeleting, setIsDeleting] = useState(false);
+
   const params = useParams();
   const navigate = useNavigate();
 
@@ -23,7 +24,6 @@ export default function EventDetails() {
     isError: isErrorDeleting,
     error: deleteError,
   } = useMutation({
-    //assigning an alias to ispending since there  is a name clash
     mutationFn: deleteEvent,
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -37,6 +37,7 @@ export default function EventDetails() {
   function handleStartDelete() {
     setIsDeleting(true);
   }
+
   function handleStopDelete() {
     setIsDeleting(false);
   }
@@ -105,10 +106,13 @@ export default function EventDetails() {
     <>
       {isDeleting && (
         <Modal onClose={handleStopDelete}>
-          <h1>Are you Sure??</h1>
+          <h2>Are you sure?</h2>
+          <p>
+            Do you really want to delete this event? This action cannot be
+            undone.
+          </p>
           <div className="form-actions">
-            {isPendingDeletion && <p>Deleting..</p>}
-
+            {isPendingDeletion && <p>Deleting, please wait...</p>}
             {!isPendingDeletion && (
               <>
                 <button onClick={handleStopDelete} className="button-text">
@@ -122,15 +126,15 @@ export default function EventDetails() {
           </div>
           {isErrorDeleting && (
             <ErrorBlock
-              title="Could not Delete the event"
+              title="Failed to delete event"
               message={
-                deleteError.info?.message || "Sorry We cannot delete the event"
+                deleteError.info?.message ||
+                "Failed to delete event, please try again later."
               }
             />
           )}
         </Modal>
       )}
-
       <Outlet />
       <Header>
         <Link to="/events" className="nav-item">

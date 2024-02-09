@@ -9,25 +9,23 @@ import { queryClient } from "../../util/http.js";
 
 export default function NewEvent() {
   const navigate = useNavigate();
-  // below the mutate functin when called will be executed to send data to backend
+
   const { mutate, isPending, isError, error } = useMutation({
     mutationFn: createNewEvent,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["events"] });
-      // it tells react that some of the data in outdated now and it should be maarked stale and a refetch shuld be triggered
-      //the query key allows a refetch in all those components  which have the query key events in them
       navigate("/events");
     },
   });
 
   function handleSubmit(formData) {
-    mutate({ event: formData }); // this is the structure of the data that my backend wants
+    mutate({ event: formData });
   }
 
   return (
     <Modal onClose={() => navigate("../")}>
       <EventForm onSubmit={handleSubmit}>
-        {isPending && "Submittingg"}
+        {isPending && "Submitting..."}
         {!isPending && (
           <>
             <Link to="../" className="button-text">
@@ -41,10 +39,10 @@ export default function NewEvent() {
       </EventForm>
       {isError && (
         <ErrorBlock
-          title="failed to create and event"
+          title="Failed to create event"
           message={
             error.info?.message ||
-            "Failed to create event, faile to send your input"
+            "Failed to create event. Please check your inputs and try again later."
           }
         />
       )}
